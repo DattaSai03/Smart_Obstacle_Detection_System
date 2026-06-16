@@ -1,0 +1,185 @@
+## CODE
+// ---------------- SENSOR PIN DEFINITIONS ----------------
+
+// Left Ultrasonic Sensor
+#define TRIG_LEFT    2
+#define ECHO_LEFT    3
+
+// Front Ultrasonic Sensor
+#define TRIG_FRONT   4
+#define ECHO_FRONT   5
+
+// Right Ultrasonic Sensor
+#define TRIG_RIGHT   6
+#define ECHO_RIGHT   7
+
+
+// ---------------- BUZZER PIN DEFINITIONS ----------------
+
+// Left Direction Buzzer
+#define BUZZER_LEFT   8
+
+// Front Direction Buzzer
+#define BUZZER_FRONT  9
+
+// Right Direction Buzzer
+#define BUZZER_RIGHT  10
+
+
+// ---------------- GLOBAL VARIABLE ----------------
+
+long duration;
+
+
+// ======================================================
+// FUNCTION TO MEASURE DISTANCE
+// ======================================================
+
+int getDistance(int trigPin, int echoPin)
+{
+    // Clear Trigger Pin
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+
+    // Send Ultrasonic Pulse
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+
+    digitalWrite(trigPin, LOW);
+
+    // Read Echo Duration
+    duration = pulseIn(echoPin, HIGH);
+
+    // Convert Time into Distance
+    int distance = duration * 0.034 / 2;
+
+    return distance;
+}
+
+
+// ======================================================
+// SETUP FUNCTION
+// Runs Only Once
+// ======================================================
+
+void setup()
+{
+    // Left Sensor
+    pinMode(TRIG_LEFT, OUTPUT);
+    pinMode(ECHO_LEFT, INPUT);
+
+    // Front Sensor
+    pinMode(TRIG_FRONT, OUTPUT);
+    pinMode(ECHO_FRONT, INPUT);
+
+    // Right Sensor
+    pinMode(TRIG_RIGHT, OUTPUT);
+    pinMode(ECHO_RIGHT, INPUT);
+
+    // Buzzers
+    pinMode(BUZZER_LEFT, OUTPUT);
+    pinMode(BUZZER_FRONT, OUTPUT);
+    pinMode(BUZZER_RIGHT, OUTPUT);
+
+    // Start Serial Monitor
+    Serial.begin(9600);
+}
+
+
+// ======================================================
+// MAIN LOOP FUNCTION
+// Runs Continuously
+// ======================================================
+
+void loop()
+{
+    // ---------------- READ SENSOR DISTANCES ----------------
+
+    int leftDist  = getDistance(TRIG_LEFT, ECHO_LEFT);
+
+    int frontDist = getDistance(TRIG_FRONT, ECHO_FRONT);
+
+    int rightDist = getDistance(TRIG_RIGHT, ECHO_RIGHT);
+
+
+    // ---------------- DISPLAY DISTANCES ----------------
+
+    Serial.print("Left: ");
+    Serial.print(leftDist);
+    Serial.print(" cm   ");
+
+    Serial.print("Front: ");
+    Serial.print(frontDist);
+    Serial.print(" cm   ");
+
+    Serial.print("Right: ");
+    Serial.print(rightDist);
+    Serial.println(" cm");
+
+
+    // ---------------- TURN OFF ALL BUZZERS ----------------
+
+    noTone(BUZZER_LEFT);
+    noTone(BUZZER_FRONT);
+    noTone(BUZZER_RIGHT);
+
+
+    // ---------------- FIND NEAREST OBSTACLE ----------------
+
+    int minDist = min(frontDist, min(leftDist, rightDist));
+
+
+    // ---------------- CHECK THRESHOLD CONDITION ----------------
+
+    // Activate buzzer only if obstacle is within 300 cm
+
+    if(minDist > 0 && minDist <= 300)
+    {
+
+        // ---------------- PRIORITY LOGIC ----------------
+        // Front > Left > Right
+
+
+        // Front Obstacle Priority
+
+        if(frontDist == minDist)
+        {
+            tone(BUZZER_FRONT, 1500);
+
+            Serial.println("Nearest Obstacle: FRONT");
+        }
+
+
+        // Left Obstacle Priority
+
+        else if(leftDist == minDist)
+        {
+            tone(BUZZER_LEFT, 1000);
+
+            Serial.println("Nearest Obstacle: LEFT");
+        }
+
+
+        // Right Obstacle Priority
+
+        else if(rightDist == minDist)
+        {
+            tone(BUZZER_RIGHT, 2000);
+
+            Serial.println("Nearest Obstacle: RIGHT");
+        }
+    }
+
+
+    // ---------------- NO OBSTACLE CONDITION ----------------
+
+    else
+    {
+        Serial.println("No Obstacle Within 3 Meters");
+    }
+
+
+    // ---------------- SMALL DELAY ----------------
+
+    delay(100);
+}
