@@ -153,9 +153,16 @@ Repeat Continuously
 The project includes:
 
 - Flow Chart
+
+  <img width="1024" height="1536" alt="ChatGPT Image Jun 11, 2026, 10_21_32 AM" src="https://github.com/user-attachments/assets/75d8c353-8c20-4358-ac51-94d1a3bbe75c" />
+
 - Block Diagram
-- Circuit Diagram
+
+  <img width="1536" height="1024" alt="ChatGPT Image Jun 11, 2026, 10_23_51 AM" src="https://github.com/user-attachments/assets/ba26301d-7f54-49ec-a197-71f731a0d5aa" />
+
 - Schematic Diagram
+
+<img width="1536" height="1024" alt="ChatGPT Image Jun 16, 2026, 10_56_29 AM" src="https://github.com/user-attachments/assets/ebb0fe74-5781-4e18-beee-790fc821f0fa" />
 
 ---
 
